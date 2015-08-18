@@ -1,0 +1,72 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.2'
+    }
+}
+
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+	apply plugin: 'gwt'
+	apply plugin: 'war'
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Wild West Bank',
+                   'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'commons-collections:commons-collections:3.2'
+    
+    compile 'com.google.gwt:gwt-servlet:2.7.0'
+    compile 'com.google.gwt:gwt-user:2.7.0'
+    compile 'com.sencha.gxt:gxt:3.1.1'
+    
+   	compile 'org.springframework:spring-context:4.2.0.RELEASE'
+   	compile 'org.springframework:spring-web:4.2.0.RELEASE'
+   	compile 'org.springframework:spring-orm:4.2.0.RELEASE'
+   	compile 'org.springframework.data:spring-data-jpa:1.8.2.RELEASE'
+   	
+   	compile 'org.hibernate:hibernate-entitymanager:4.3.11.Final'
+   	compile 'org.hibernate:hibernate-core:4.3.11.Final'
+   	
+   	compile 'org.hsqldb:hsqldb:2.3.3'
+   	
+   	compile 'org.liquibase:liquibase-core:3.4.1'
+   	
+    testCompile 'junit:junit:4.+'
+}
+
+eclipse {
+  classpath {
+    defaultOutputDir = file('war/WEB-INF/classes')
+  }
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
