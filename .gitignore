@@ -4,10 +4,4 @@ gwt-unitCache/
 .settings/
 .gradle/
 .classpath
-war/app
-war/common
-war/login
-war/META-INF
-war/WEB-INF/classes/
-war/WEB-INF/deploy/
-war/WEB-INF/lib/
+war/
