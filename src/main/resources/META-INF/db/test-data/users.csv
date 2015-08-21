@@ -1,2 +1,2 @@
-id,name,password,active
-1,admin,21232f297a57a5a743894a0e4a801fc3,true
+id,name,password,active,super_user,first_name,last_name,middle_name,tab_number
+1,admin,21232f297a57a5a743894a0e4a801fc3,true,true,Администратор,Администратор,Администратор,000001

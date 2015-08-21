@@ -4,10 +4,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
-    <changeSet id="1" author="asmirnov">
-    	<comment>Create users table</comment>
-        <createTable tableName="users">
+    <changeSet id="init_db" author="asmirnov">
+    	<comment>Create tables</comment>
+    	<createTable tableName="users">
             <column name="id" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -18,11 +17,116 @@
                 <constraints nullable="false"/>
             </column>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
+            <column name="super_user" type="boolean" defaultValueBoolean="false"/>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="varchar(50)"/>
+            <column name="tab_number" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <createTable tableName="address">
+        	<column name="id" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="region" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="building" type="varchar(10)"/>
+            <column name="flat" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="zip_code" type="varchar(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="person">
+            <column name="id" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="varchar(50)"/>
+            <column name="birthday" type="date">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="inn" type="varchar(12)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="varchar(50)"/>
+            <column name="phone" type="varchar(50)"/>
+            <column name="address_id" type="integer">
+            	<constraints foreignKeyName="person_address_pk" referencedTableName="address" referencedColumnNames="id" unique="true" nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="account">
+        	<column name="id" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_number" type="varchar(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="person_id" type="integer">
+            	<constraints foreignKeyName="account_person_fk" referencedTableName="person" referencedColumnNames="id" nullable="false"/>
+            </column>
+            <column name="open_date" type="DATETIME">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="close_date" type="DATETIME"/>		
+            <column name="amount" type="CURRENCY">
+            	<constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="transaction">
+        	<column name="id" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="transaction_type" type="integer">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="summ" type="CURRENCY">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="source_account_number" type="varchar(20)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="destination_account_number" type="varchar(20)"/>
+            <column name="message" type="text"/>
+            <column name="transaction_date" type="DATETIME">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="integer">
+            	<constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createSequence sequenceName="users_sequence" incrementBy="1" startValue="2"/>
+        <createSequence sequenceName="addresses_sequence" incrementBy="1" startValue="4"/>
+        <createSequence sequenceName="persons_sequence" incrementBy="1" startValue="4"/>
+        <createSequence sequenceName="accounts_sequence" incrementBy="1" startValue="4"/>
+        <createSequence sequenceName="transactions_sequence" incrementBy="1" startValue="4"/>
     </changeSet>
-    <changeSet id="2" author="asmirnov">
+    <changeSet id="test_data" author="asmirnov">
     	<comment>Load test data</comment>
+        <loadData tableName="address" file="META-INF/db/test-data/addresses.csv"/>
+        <loadData tableName="person" file="META-INF/db/test-data/persons.csv"/>
+        <loadData tableName="account" file="META-INF/db/test-data/accounts.csv"/>
         <loadData tableName="users" file="META-INF/db/test-data/users.csv"/>
     </changeSet>
-
 </databaseChangeLog>

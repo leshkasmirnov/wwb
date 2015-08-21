@@ -16,6 +16,8 @@ allprojects {
     apply plugin: 'eclipse'
 	apply plugin: 'gwt'
 	apply plugin: 'war'
+	apply plugin: 'jetty'
+	
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 }
@@ -47,16 +49,35 @@ dependencies {
    	compile 'org.hibernate:hibernate-core:4.3.11.Final'
    	
    	compile 'org.hsqldb:hsqldb:2.3.3'
+   	compile 'com.h2database:h2:1.3.175'
    	
    	compile 'org.liquibase:liquibase-core:3.4.1'
    	
     testCompile 'junit:junit:4.+'
 }
 
-eclipse {
-  classpath {
-    defaultOutputDir = file('war/WEB-INF/classes')
-  }
+gwt{
+	gwtVersion='2.7.0'
+	minHeapSize = "512M";
+    maxHeapSize = "1024M";
+    
+	modules 'com.wildwestbank.modules.common.Common', 'com.wildwestbank.modules.login.Login', 'com.wildwestbank.modules.app.App'
+}
+
+compileGwt{
+    jvmArgs = ['-Xms512m -Xmx2048m -XX:MaxPermSize=256m']
+}
+
+task jettyDraftWar(type: JettyRunWar) {
+    dependsOn draftWar
+    dependsOn.remove('war')
+    webApp=draftWar.archivePath
+}
+
+task draftWarTemplate(type: Copy) {
+    with tasks.draftWar
+    dependsOn tasks.draftWar.dependsOn
+    into file('war')
 }
 
 test {
@@ -68,5 +89,11 @@ uploadArchives {
        flatDir {
            dirs 'repos'
        }
+    }
+}
+
+clean{
+    doLast(){
+        project.delete 'bin', 'war', '.gwt', 'gwt-unitCache'
     }
 }
