@@ -5,6 +5,7 @@ package com.wildwestbank.modules.app.gwt.client.views.users;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
+import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -13,6 +14,7 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.PasswordField;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.wildwestbank.modules.app.gwt.client.views.BeanEditor;
+import com.wildwestbank.modules.app.gwt.client.views.TextFieldNotEmptyValidator;
 import com.wildwestbank.modules.common.db.model.User;
 
 /**
@@ -20,6 +22,39 @@ import com.wildwestbank.modules.common.db.model.User;
  *
  */
 public class UserEditor implements BeanEditor<User> {
+
+	public interface UserEditorMessages extends Messages {
+
+		static final UserEditorMessages MESSSAGES = GWT.create(UserEditorMessages.class);
+
+		@DefaultMessage("Логин")
+		String name();
+
+		@DefaultMessage("Пароль")
+		String passwordField();
+
+		@DefaultMessage("Подтверждение")
+		String confirmPasswordField();
+
+		@DefaultMessage("Активен")
+		String active();
+
+		@DefaultMessage("Суперпользователь")
+		String superUser();
+
+		@DefaultMessage("Фамилия")
+		String firstName();
+
+		@DefaultMessage("Имя")
+		String lastName();
+
+		@DefaultMessage("Отчество")
+		String middleName();
+
+		@DefaultMessage("Табельный номер")
+		String tabNumber();
+
+	}
 
 	private static final int LABEL_WIDTH = 150;
 
@@ -42,15 +77,27 @@ public class UserEditor implements BeanEditor<User> {
 	public Widget asWidget() {
 		VerticalLayoutContainer verticalLayoutContainer = new VerticalLayoutContainer();
 
-		FieldLabel nameField = new FieldLabel(name, "Логин");
-		FieldLabel passwordField = new FieldLabel(this.passwordField, "Пароль");
-		FieldLabel confirmPasswordField = new FieldLabel(this.confirmPasswordField, "Подтверждение");
-		FieldLabel activeField = new FieldLabel(active, "Активен");
-		FieldLabel superUserField = new FieldLabel(superUser, "Суперпользователь");
-		FieldLabel firstNameField = new FieldLabel(firstName, "Фамилия");
-		FieldLabel lastNameField = new FieldLabel(lastName, "Имя");
-		FieldLabel middleNameField = new FieldLabel(middleName, "Отчество");
-		FieldLabel tabNumberField = new FieldLabel(tabNumber, "Табельный номер");
+		name.addValidator(new TextFieldNotEmptyValidator());
+		firstName.addValidator(new TextFieldNotEmptyValidator());
+		lastName.addValidator(new TextFieldNotEmptyValidator());
+		middleName.addValidator(new TextFieldNotEmptyValidator());
+		tabNumber.addValidator(new TextFieldNotEmptyValidator());
+
+		FieldLabel nameField = new FieldLabel(name, UserEditorMessages.MESSSAGES.name());
+		FieldLabel passwordField = new FieldLabel(this.passwordField,
+				UserEditorMessages.MESSSAGES.passwordField());
+		FieldLabel confirmPasswordField = new FieldLabel(this.confirmPasswordField,
+				UserEditorMessages.MESSSAGES.confirmPasswordField());
+		FieldLabel activeField = new FieldLabel(active, UserEditorMessages.MESSSAGES.active());
+		FieldLabel superUserField = new FieldLabel(superUser,
+				UserEditorMessages.MESSSAGES.superUser());
+		FieldLabel firstNameField = new FieldLabel(firstName,
+				UserEditorMessages.MESSSAGES.firstName());
+		FieldLabel lastNameField = new FieldLabel(lastName, UserEditorMessages.MESSSAGES.lastName());
+		FieldLabel middleNameField = new FieldLabel(middleName,
+				UserEditorMessages.MESSSAGES.middleName());
+		FieldLabel tabNumberField = new FieldLabel(tabNumber,
+				UserEditorMessages.MESSSAGES.tabNumber());
 
 		nameField.setLabelWidth(LABEL_WIDTH);
 		passwordField.setLabelWidth(LABEL_WIDTH);
@@ -96,6 +143,12 @@ public class UserEditor implements BeanEditor<User> {
 
 	private boolean isEmptyString(String str) {
 		return str == null || "".equals(str);
+	}
+
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

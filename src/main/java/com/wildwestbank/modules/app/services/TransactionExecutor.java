@@ -10,11 +10,13 @@ import com.wildwestbank.modules.common.db.model.Account;
 import com.wildwestbank.modules.common.db.model.Transaction;
 
 /**
+ * Исполнитель транзакций.
+ * 
  * @author Alexey Smirnov <aleksey.smirnov89@gmail.com>
  *
  */
-public interface AccountsService {
+public interface TransactionExecutor {
 
-	List<Account> doTransaction(Account account, Transaction transaction)
+	List<Account> execute(Transaction transaction, Integer userId)
 			throws TransactionExecutionException;
 }

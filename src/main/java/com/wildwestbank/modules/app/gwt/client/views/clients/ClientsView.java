@@ -55,6 +55,12 @@ public class ClientsView extends BaseDetailedView<Person> {
 
 		@DefaultMessage("Удалить запись")
 		String deleteButton();
+
+		@DefaultMessage("Клиенты")
+		String headerText();
+
+		@DefaultMessage("Счета")
+		String detailHeaderText();
 	}
 
 	private AccountsView accountsView;
@@ -70,7 +76,7 @@ public class ClientsView extends BaseDetailedView<Person> {
 
 	@Override
 	public String getHeaderText() {
-		return "Клиенты";
+		return ClientsMessages.MESSSAGES.headerText();
 	}
 
 	@Override
@@ -179,7 +185,7 @@ public class ClientsView extends BaseDetailedView<Person> {
 
 	@Override
 	public String getDetailHeaderText() {
-		return "Счета";
+		return ClientsMessages.MESSSAGES.detailHeaderText();
 	}
 
 	public Person getSelected() {

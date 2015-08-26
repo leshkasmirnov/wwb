@@ -255,9 +255,11 @@ public class AccountsView extends BaseView<Account> {
 
 			@Override
 			public void onSelect(SelectEvent event) {
-				Transaction t = dialog.flush();
-				doTransaction(t);
-				dialog.hide();
+				if (dialog.validate()) {
+					Transaction t = dialog.flush();
+					doTransaction(t);
+					dialog.hide();
+				}
 			}
 		});
 		dialog.show();

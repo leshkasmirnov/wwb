@@ -34,4 +34,9 @@ public class AccountOperationsDialog extends Dialog implements BeanEditor<Transa
 		return accountsOperationsWidget.flush();
 	}
 
+	@Override
+	public boolean validate() {
+		return accountsOperationsWidget.validate();
+	}
+
 }

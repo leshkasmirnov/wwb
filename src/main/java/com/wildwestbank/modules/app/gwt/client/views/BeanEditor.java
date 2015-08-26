@@ -12,7 +12,24 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface BeanEditor<M> extends IsWidget, Editor<M> {
 
+	/**
+	 * Инициализация.
+	 * 
+	 * @param bean
+	 */
 	public void init(M bean);
 
+	/**
+	 * Копирование всех значений из полей ui в поля бина.
+	 * 
+	 * @return
+	 */
 	public M flush();
+
+	/**
+	 * Валидация.
+	 * 
+	 * @return
+	 */
+	boolean validate();
 }

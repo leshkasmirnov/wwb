@@ -43,6 +43,7 @@ dependencies {
    	compile 'org.springframework:spring-context:4.2.0.RELEASE'
    	compile 'org.springframework:spring-web:4.2.0.RELEASE'
    	compile 'org.springframework:spring-orm:4.2.0.RELEASE'
+   	compile 'org.springframework:spring-test:4.2.0.RELEASE'
    	compile 'org.springframework.data:spring-data-jpa:1.8.2.RELEASE'
    	
    	compile 'org.hibernate:hibernate-entitymanager:4.3.11.Final'

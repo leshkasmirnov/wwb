@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gwt.user.client.rpc.InvocationException;
+import com.wildwestbank.modules.app.exceptions.TransactionExecutionException;
 import com.wildwestbank.modules.app.gwt.client.rpc.AccountsRpc;
 import com.wildwestbank.modules.app.services.AccountsService;
 import com.wildwestbank.modules.common.db.dao.AccountsRepository;
@@ -53,7 +55,12 @@ public class AccountsRpcImpl implements AccountsRpc {
 
 	@Override
 	public ArrayList<Account> doTransaction(Account account, Transaction transaction) {
-		return (ArrayList<Account>) accountsService.doTransaction(account, transaction);
+		try {
+			return (ArrayList<Account>) accountsService.doTransaction(account, transaction);
+		} catch (TransactionExecutionException e) {
+			throw new InvocationException("Ошибка выполнения транзакции. Подробности: "
+					+ e.getMessage(), e);
+		}
 	}
 
 }

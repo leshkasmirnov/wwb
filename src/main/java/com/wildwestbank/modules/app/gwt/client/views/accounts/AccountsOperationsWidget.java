@@ -3,12 +3,15 @@
  */
 package com.wildwestbank.modules.app.gwt.client.views.accounts;
 
+import java.math.BigDecimal;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -34,6 +37,25 @@ import com.wildwestbank.modules.common.db.model.Transaction;
  */
 public class AccountsOperationsWidget implements BeanEditor<Transaction> {
 
+	public interface AccountsOperationsMessages extends Messages {
+
+		static final AccountsOperationsMessages MESSSAGES = GWT
+				.create(AccountsOperationsMessages.class);
+
+		@DefaultMessage("Операция")
+		String operationsCombobox();
+
+		@DefaultMessage("Сумма")
+		String summ();
+
+		@DefaultMessage("Счет назначения")
+		String accountSelect();
+
+		@DefaultMessage("Комментарий")
+		String message();
+
+	}
+
 	public interface Driver extends SimpleBeanEditorDriver<Transaction, AccountsOperationsWidget> {
 	}
 
@@ -45,6 +67,11 @@ public class AccountsOperationsWidget implements BeanEditor<Transaction> {
 	BigDecimalSpinnerField summ = new BigDecimalSpinnerField();
 	TextField destinationAccountNumber = new TextField();
 	TextArea message = new TextArea();
+
+	private ComboBox<TransactionTypes> operationsCombobox;
+	private FieldLabel accountSelectField;
+
+	private AccountSelectField accountSelect;
 
 	public AccountsOperationsWidget() {
 		super();
@@ -89,10 +116,12 @@ public class AccountsOperationsWidget implements BeanEditor<Transaction> {
 	public Widget asWidget() {
 		final VerticalLayoutContainer verticalLayoutContainer = new VerticalLayoutContainer();
 
-		ComboBox<TransactionTypes> operationsCombobox = createOperationsCombobox();
-		final FieldLabel operations = new FieldLabel(operationsCombobox, "Операция");
-		final FieldLabel summField = new FieldLabel(summ, "Сумма");
-		AccountSelectField accountSelect = new AccountSelectField();
+		operationsCombobox = createOperationsCombobox();
+		final FieldLabel operations = new FieldLabel(operationsCombobox,
+				AccountsOperationsMessages.MESSSAGES.operationsCombobox());
+		final FieldLabel summField = new FieldLabel(summ,
+				AccountsOperationsMessages.MESSSAGES.summ());
+		accountSelect = new AccountSelectField();
 		accountSelect.addValueChangeHandler(new ValueChangeHandler<Account>() {
 
 			@Override
@@ -104,8 +133,14 @@ public class AccountsOperationsWidget implements BeanEditor<Transaction> {
 				}
 			}
 		});
-		final FieldLabel accountSelectField = new FieldLabel(accountSelect, "Счет назначения");
-		final FieldLabel commentField = new FieldLabel(message, "Комментарий");
+		accountSelectField = new FieldLabel(accountSelect,
+				AccountsOperationsMessages.MESSSAGES.accountSelect());
+		final FieldLabel commentField = new FieldLabel(message,
+				AccountsOperationsMessages.MESSSAGES.message());
+
+		operationsCombobox.addValidator(new GenericNotNullValidator<TransactionTypes>());
+		accountSelect.addValidator(new GenericNotNullValidator<Account>());
+		summ.addValidator(new GenericNotNullValidator<BigDecimal>());
 
 		operations.setLabelWidth(LABEL_WIDTH);
 		summField.setLabelWidth(LABEL_WIDTH);
@@ -148,6 +183,13 @@ public class AccountsOperationsWidget implements BeanEditor<Transaction> {
 	@Override
 	public Transaction flush() {
 		return driver.flush();
+	}
+
+	@Override
+	public boolean validate() {
+		return accountSelectField.isVisible() ? accountSelect.validate()
+				&& operationsCombobox.validate() && summ.validate() : operationsCombobox.validate()
+				&& summ.validate();
 	}
 
 }

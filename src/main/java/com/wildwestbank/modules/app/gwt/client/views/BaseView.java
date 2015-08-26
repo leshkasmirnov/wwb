@@ -6,6 +6,8 @@ package com.wildwestbank.modules.app.gwt.client.views;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -33,6 +35,18 @@ import com.wildwestbank.modules.common.db.model.Identified;
  *
  */
 public abstract class BaseView<M extends Identified> implements IsWidget {
+
+	public interface DefaultMessages extends Messages {
+
+		static final DefaultMessages MESSSAGES = GWT.create(DefaultMessages.class);
+
+		@DefaultMessage("Удаление записи")
+		String removeDialogHeader();
+
+		@DefaultMessage("Вы действительно хотите удалить запись?")
+		String removeDialogQuestion();
+
+	}
 
 	protected VerticalLayoutContainer verticalLayoutContainer;
 	protected CustomButtonBar toolBar;
@@ -80,8 +94,9 @@ public abstract class BaseView<M extends Identified> implements IsWidget {
 	private void handleDeleteAction() {
 		final M selectedItem = grid.getSelectionModel().getSelectedItem();
 		if (selectedItem != null) {
-			ConfirmMessageBox confirmMessageBox = new ConfirmMessageBox("Удаление записи",
-					"Вы действительно хотите удалить запись?");
+			ConfirmMessageBox confirmMessageBox = new ConfirmMessageBox(
+					DefaultMessages.MESSSAGES.removeDialogHeader(),
+					DefaultMessages.MESSSAGES.removeDialogQuestion());
 
 			confirmMessageBox.addDialogHideHandler(new DialogHideHandler() {
 				@Override
@@ -110,8 +125,10 @@ public abstract class BaseView<M extends Identified> implements IsWidget {
 
 			@Override
 			public void onSelect(SelectEvent event) {
-				dialog.hide();
-				afterFlush(beanEditor.flush());
+				if (beanEditor.validate()) {
+					dialog.hide();
+					afterFlush(beanEditor.flush());
+				}
 			}
 		});
 		dialog.setWidth("40%");
